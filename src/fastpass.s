@@ -247,23 +247,24 @@ FastpassInit:
 	.ALIGN	16
 
 NoLineStore:
-	.int   0x00000000
+	.int	0x00000000
 
 
 .SECTION .bss
 	.ALIGN	16
 
 LineStore:
-	.zero	2 * 8
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
 LineStoreCurr:
-	.zero	8
+	.int	0x00000000
 
 StoreState:
-	.zero	4
+	.int	0x00000000
 
 UseSavedState:
-	.zero	4
+	.int	0x00000000
 
 modstate: .zero 62 * 8
 

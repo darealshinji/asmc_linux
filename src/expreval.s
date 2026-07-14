@@ -5079,7 +5079,7 @@ ExprEvalInit:
 	.ALIGN	16
 
 thissym:
-	.zero  8
+	.quad  0x0000000000000000
 
 nullstruct:
 	.quad  0x0000000000000000

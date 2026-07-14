@@ -1598,16 +1598,20 @@ cp_bss2:
 
 formatoptions:
 	.quad  bin_init
-	.quad  0x0000004E49420000
+	.word  0x0000
+	.ascii "BIN\0\0\0"
 	.quad  omf_init
-	.quad  0x000000464D4F0000
+	.word  0x0000
+	.ascii "OMF\0\0\0"
 	.quad  coff_init
-	.quad  0x000046464F430E12
+	.word  0x0E12
+	.ascii "COFF\0\0"
 	.quad  elf_init
-	.quad  0x000000464C450F00
+	.word  0x0F00
+	.ascii "ELF\0\0\0"
 
 cst:
-	.byte  0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
+	.quad  0x0000000100000005
 	.quad  cp_text1
 	.quad  cp_text2
 	.quad  0x0000000100000005

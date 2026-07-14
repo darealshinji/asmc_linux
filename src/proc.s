@@ -5340,88 +5340,93 @@ StackAdjHigh:
 	.int   0x00000000
 
 fast_regs:
+/*; { T_CL,  T_DL,  T_R8B, T_R9B, 0,     0,     0,     0 },
+  ; { T_CX,  T_DX,  T_R8W, T_R9W, 0,     0,     0,     0 },
+  ; { T_ECX, T_EDX, T_R8D, T_R9D, 0,     0,     0,     0 },
+  ; { T_RCX, T_RDX, T_R8,  T_R9,  0,     0,     0,     0 } */
 	.byte  0x02, 0x03, 0x5B, 0x5C, 0x00, 0x00, 0x00, 0x00
 	.byte  0x0A, 0x0B, 0x63, 0x64, 0x00, 0x00, 0x00, 0x00
 	.byte  0x12, 0x13, 0x6B, 0x6C, 0x00, 0x00, 0x00, 0x00
 	.byte  0x74, 0x75, 0x7B, 0x7C, 0x00, 0x00, 0x00, 0x00
 
 sysv_regs:
+/*; { T_DIL, T_SIL, T_DL,  T_CL,  T_R8B, T_R9B, 0,     0 },
+  ; { T_DI,  T_SI,  T_DX,  T_CX,  T_R8W, T_R9W, 0,     0 },
+  ; { T_EDI, T_ESI, T_EDX, T_ECX, T_R8D, T_R9D, 0,     0 },
+  ; { T_RDI, T_RSI, T_RDX, T_RCX, T_R8,  T_R9,  0,     0 } */
 	.byte  0x5A, 0x59, 0x03, 0x02, 0x5B, 0x5C, 0x00, 0x00
 	.byte  0x10, 0x0F, 0x0B, 0x0A, 0x63, 0x64, 0x00, 0x00
 	.byte  0x18, 0x17, 0x13, 0x12, 0x6B, 0x6C, 0x00, 0x00
 	.byte  0x7A, 0x79, 0x75, 0x74, 0x7B, 0x7C, 0x00, 0x00
 
 watc_regs:
+/*; { T_AL,  T_DL,  T_BL,  T_CL,  0,     0,     0,     0 },
+  ; { T_AX,  T_DX,  T_BX,  T_CX,  0,     0,     0,     0 },
+  ; { T_EAX, T_EDX, T_EBX, T_ECX, 0,     0,     0,     0 },
+  ; { T_RAX, T_RDX, T_RBX, T_RCX, 0,     0,     0,     0 } */
 	.byte  0x01, 0x03, 0x04, 0x02, 0x00, 0x00, 0x00, 0x00
 	.byte  0x09, 0x0B, 0x0C, 0x0A, 0x00, 0x00, 0x00, 0x00
 	.byte  0x11, 0x13, 0x14, 0x12, 0x00, 0x00, 0x00, 0x00
 	.byte  0x73, 0x75, 0x76, 0x74, 0x00, 0x00, 0x00, 0x00
 
 user_regs:
+/*; { T_AL,  T_DL,  T_CL,  T_R8B, T_R9B, T_R10B,T_R11B,0 },
+  ; { T_AX,  T_DX,  T_CX,  T_R8W, T_R9W, T_R10W,T_R11W,0 },
+  ; { T_EAX, T_EDX, T_ECX, T_R8D, T_R9D, T_R10D,T_R11D,0 },
+  ; { T_RAX, T_RDX, T_RCX, T_R8,  T_R9,  T_R10, T_R11, 0 } */
 	.byte  0x01, 0x03, 0x02, 0x5B, 0x5C, 0x5D, 0x5E, 0x00
 	.byte  0x09, 0x0B, 0x0A, 0x63, 0x64, 0x65, 0x66, 0x00
 	.byte  0x11, 0x13, 0x12, 0x6B, 0x6C, 0x6D, 0x6E, 0x00
 	.byte  0x73, 0x75, 0x74, 0x7B, 0x7C, 0x7D, 0x7E, 0x00
 
+
+.macro entry regs mask gpr xmm int flags
+.quad \regs
+.int  \mask
+.byte \gpr, \xmm, \int, \flags
+.endm
+
+/*; define _P_REGPARAM	0x01	; use register params (TMACRO)
+  ; define _P_CLEANUP	0x02	; local stack cleanup
+  ; define _P_LEFT		0x04	; push/assign arguments left-to-right
+  ; define _P_EXTEND	0x08	; extend regs to 2/4
+  ; define _P_RESSTACK	0x10	; use reserved stack
+  ; define _P_SYSTEMV	0x20	; System V
+  ; define _P_CSTACK	0x40	; USES register outside stack-frame (-Cs) */
 lang_table:
-	.zero  64 * 1
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40
-	.zero  16 * 1
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40
-	.quad  sysv_regs
-	.quad  0x6810080600FF03C6
-	.quad  0x0000000000000000
-	.quad  0x0200000000000000
-	.quad  0x0000000000000000
-	.quad  0x4200000000000000
-	.quad  0x0000000000000000
-	.quad  0x4200000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  0x0000000000000000
-	.quad  0x0600000000000000
-	.quad  watc_regs
-	.quad  0x0F0400030000000D
-	.quad  fast_regs
-	.quad  0x0B04000200000006
-	.quad  fast_regs
-	.quad  0x58080404000F0306
-	.quad  watc_regs
-	.quad  0x0B0400030000000D
-	.quad  fast_regs
-	.quad  0x0B040802003F0006
-	.quad  fast_regs
-	.quad  0x58080604003F0306
-	.quad  watc_regs
-	.quad  0x030800040000000F
-	.quad  watc_regs
-	.quad  0x091000040000000F
-	.quad  watc_regs
-	.quad  0x09100404000F000F
-	.quad  user_regs
-	.quad  0x0904000300000007
-	.quad  user_regs
-	.quad  0x09081003FFFF0007
-	.quad  user_regs
-	.quad  0x09101007FFFF0F07
+	entry  0,         0,          0,  0,  0,  0
+	entry  0,         0,          0,  0,  0,  0
+	entry  0,         0,          0,  0,  0,  0
+	entry  0,         0,          0,  0,  0,  0
+	entry  0,         0,          0,  0,  0,  0x40
+	entry  0,         0,          0,  0,  0,  0x40
+	entry  0,         0,          0,  0,  0,  0
+	entry  0,         0,          0,  0,  0,  0x40
+	entry  sysv_regs, 0x00FF03C6, 6,  8, 16,  0x20 | 0x08 | 0x40
+	entry  0,         0,          0,  0,  2,  0x02
+	entry  0,         0,          0,  0,  0,  0x02 | 0x40
+	entry  0,         0,          0,  0,  0,  0x02 | 0x40
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  0,         0,          0,  0,  0,  0x04 | 0x02
+	entry  watc_regs, 0x0000000D, 3,  0,  4,  0x01 | 0x08 | 0x04 | 0x02
+	entry  fast_regs, 0x00000006, 2,  0,  4,  0x01 | 0x08 | 0x02
+	entry  fast_regs, 0x000F0306, 4,  4,  8,  0x10 | 0x08 | 0x40
+	entry  watc_regs, 0x0000000D, 3,  0,  4,  0x01 | 0x08 | 0x02
+	entry  fast_regs, 0x003F0006, 2,  8,  4,  0x01 | 0x08 | 0x02
+	entry  fast_regs, 0x003F0306, 4,  6,  8,  0x10 | 0x08 | 0x40
+	entry  watc_regs, 0x0000000F, 4,  0,  8,  0x01 | 0x02
+	entry  watc_regs, 0x0000000F, 4,  0, 16,  0x01 | 0x08
+	entry  watc_regs, 0x000F000F, 4,  4, 16,  0x01 | 0x08
+	entry  user_regs, 0x00000007, 3,  0,  4,  0x01 | 0x08
+	entry  user_regs, 0xFFFF0007, 3, 16,  8,  0x01 | 0x08
+	entry  user_regs, 0xFFFF0F07, 7, 16, 16,  0x01 | 0x08
 
 DS0000:
 	.asciz ","

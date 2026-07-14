@@ -1882,19 +1882,10 @@ $_290:	mov	rbx, qword ptr [rbp-0x20]
 	.ALIGN	16
 
 stokstr1:
-	.asciz "("
-	.asciz ")"
-	.asciz "*"
-	.asciz "+"
-	.asciz ","
-	.asciz "-"
-	.asciz "."
-	.asciz "/"
+	.word  '(',')','*','+',',','-','.','/'
 
 stokstr2:
-	.asciz "["
-	.byte  0x00, 0x00
-	.asciz "]"
+	.word  '[',0,']'
 
 __equ:
 	.asciz "="

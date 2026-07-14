@@ -1724,7 +1724,7 @@ internal_segparms:
 	.quad  0x0000000000000003
 
 cst:
-	.byte  0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.quad  0x0000000000000105
 	.quad  DS0003
 	.quad  DS0004
 	.quad  0x0000000000000105
